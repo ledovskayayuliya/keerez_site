@@ -1,12 +1,40 @@
 import React, { Component } from 'react';
+import items from './data'
 
 const ServiceContext=React.createContext();
 // <ServiceContext.Provider value={'hello'}
  class  ServiceProvider extends Component {
-    state={};
+    state={
+        services:[],
+        sortedServices:[],
+        featuredServices:[],
+        loading:true
+    };
+    //getData
+
+    componentDidMount(){
+        //this.getData
+        let services=this.formatData(items);
+        console.log(services);
+    }
+
+    formatData(items){
+        let tempItems=items.map(item=>{
+           let id=item.sys.id
+           let images=item.fields.images.map(image=>image.fields.file.url);
+           let service={...item.fields,images,id}
+           return service;
+        });
+        return tempItems
+    }
+
+
+
+
+
     render() {
         return (
-        <ServiceContext.Provider value={'hello'}>
+        <ServiceContext.Provider value={{...this.state}}>
             {this.props.children}
         </ServiceContext.Provider>
         );
