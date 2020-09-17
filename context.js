@@ -15,7 +15,10 @@ const ServiceContext=React.createContext();
     componentDidMount(){
         //this.getData
         let services=this.formatData(items);
-        console.log(services);
+        let featuredServices=services.filter(service=>service.featured===true);
+        this.setState({
+            services,featuredServices,sortedServices:services,loading:false
+        });
     }
 
     formatData(items){
