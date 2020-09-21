@@ -1,22 +1,44 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import defaultBcg from '../images/Bodybuilding1.jpeg';
+import Hero from '../components/Hero';
+import Banner from '../components/Banner';
+import {Link} from 'react-router-dom';
 import {ServiceContext} from '../context';
-import Loading from './Loading';
-import Service from './Service';
-import Title from './Title';
-export default class FeaturedServices extends Component {
-static contextType=ServiceContext;
+
+
+export default class SingleService extends Component {
+    constructor(props){
+        super(props);
+        //console.log(this.props);
+        this.state={
+            slug:this.props.match.params.slug,
+            defaultBcg
+        };
+    }
+    static contextType=ServiceContext;
+    //componentDidMount(){}
     render() {
-        let {loading, featuredServices : services } =this.context;
-        services = services.map(service => { 
-            return <Service key={service.id} service={service} />;
-          });
+        const {getService}=this.context;
+        const service=getService(this.state.slug);
+        if(!service){
+            return (
+            <div className='error'>
+                <h3>no such service could be found...</h3>
+                <Link to='/services' className='btn-primary'>
+                    back to services
+                </Link>
+            </div>
+            );
+        }
+        const {name, description, capacity, size, price, extras, images} = service
         return (
-            <section className='featured-services'>
-                <Title title='featured services'/>
-                <div className='featured-services-center'>
-                    {loading?<Loading/> : services}
-                </div>
-            </section>
+        <Hero hero='servicesHero'>
+            <Banner title={`${name} service`}>
+                <Link to="/services" className='btn-primary'>
+                    back to services
+                </Link>
+            </Banner>
+        </Hero>
         );
     }
 }
