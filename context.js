@@ -8,7 +8,14 @@ const ServiceContext=React.createContext();
         services:[],
         sortedServices:[],
         featuredServices:[],
-        loading:true
+        loading:true,
+        type:'all',
+        capacity:1,
+        price:0,
+        minPrice:0,
+        maxPrice:0,
+        minSize:0,
+        maxSize:0
     };
     //getData
 
@@ -16,8 +23,18 @@ const ServiceContext=React.createContext();
         //this.getData
         let services=this.formatData(items);
         let featuredServices=services.filter(service=>service.featured===true);
+        let maxPrice = Math.max(...services.map(item => 
+            item.price));
+            let maxSize = Math.max(...services.map(item => 
+                item.size));
         this.setState({
-            services,featuredServices,sortedServices:services,loading:false
+            services,
+            featuredServices,
+            sortedServices:services,
+            loading:false,
+            price: maxPrice,
+            maxPrice,
+            maxSize
         });
     }
 
@@ -35,8 +52,11 @@ const ServiceContext=React.createContext();
         const service=tempServices.find(service=>service.slug===slug);
         return service;
     };
-
-
+handleChange = event => {
+    const type = event.target.type
+    const name = event.target.name
+    const value = event.target.value
+}
     render() {
         return (
         <ServiceContext.Provider value={{...this.state,getService:this.getService}}>
@@ -48,4 +68,16 @@ const ServiceContext=React.createContext();
 
 const ServiceConsumer=ServiceContext.Consumer;
 
+export function withServiceConsumer(Component){
+    return function ConsumerWrapper(props){
+        return (
+        <ServiceConsumer>
+            {value => <Component {...props} context={value}/>}
+        </ServiceConsumer>
+        );
+    }
+}
+
 export {ServiceProvider,ServiceConsumer,ServiceContext};
+
+
